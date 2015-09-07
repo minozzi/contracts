@@ -113,7 +113,7 @@ JSF_obs <- merge(jsf_sec,
 ##-----------------------
 # save JSF obs time slice
 save(list = "JSF_obs", 
-     file = "~/Data/JSF/JSF-2014.RData") # change for each year
+     file = "~/Data/JSF/unique-2014.RData") # change for each year
 
 ###############################################################################
 ## EOF
