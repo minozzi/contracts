@@ -21,6 +21,10 @@ rm(list=ls())
 library(plyr)
 library(tidyr)
 
+##-----------
+# set options
+options(stringsAsFactors = FALSE)
+
 ##---------
 # load data
 load("~/Data/contracts/contracts-1999.rdata") # change for each yr
@@ -103,7 +107,8 @@ dat <- separate(dat, informationtechnologycommercialitemcategory,
                           ": ",
                           extra = "merge")
 
-## Make into R Date format
+##-----------------------
+# Make into R Date format
 dat$effectivedate          <- as.Date(dat$effectivedate, "%m/%d/%Y")
 dat$last_modified_date     <- as.Date(dat$last_modified_date, "%m/%d/%Y")
 dat$signeddate             <- as.Date(dat$signeddate, "%m/%d/%Y")
