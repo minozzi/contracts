@@ -1,8 +1,8 @@
 ## =============================================================================
-## Title:  Identifying unique PMC contracts
+## Title:  Clean an annual time slice of the contracts data 
 ## Author: Austin Knuppe (knuppe.2@osu.edu)
 ## Project: Government Contracts Data 
-## Last Updated: 7 Sept 2015
+## Last Updated: 14 Sept 2015
 ## Data Source: USASpending.gov
 ## =============================================================================
 
