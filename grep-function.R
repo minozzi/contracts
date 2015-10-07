@@ -29,4 +29,4 @@ new_dat <- as.data.frame(grep_for_x_in_y(x, y))
 colnames(new_dat)[1] <- "rownumber" 
 
 ## to retrieve the full covariate profile for the grepped rows
-new_dat <- dat[new_dat$rownumber, ]
+new_dat <- dat[rownumber]
