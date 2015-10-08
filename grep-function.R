@@ -49,12 +49,10 @@ y2 <- dat$vendorname # contract vendor
 
 ## grep through mod_parent
 dat1 <- as.data.frame(grep_for_x_in_y(x, y1))
-colnames(dat3)[1] <- "rownumber" # WM: or dat1?
 colnames(dat1)[1] <- "rownumber" # WM: or dat1?
 
 ## grep through vendorname
 dat2 <- as.data.frame(grep_for_x_in_y(x, y2))
-colnames(dat4)[1] <- "rownumber" # WM: or dat2?
 colnames(dat2)[1] <- "rownumber"
 
 ## bind both together in a list
@@ -64,7 +62,7 @@ obs_rows <- sort(unique(c(dat1$rownumber, dat2$rownumber)))
 rm(list = c("dat1", "dat2"))
 
 ## merge original df with row numbers to retrieve the full covariate profile of each contract event
-military_provider_firm <- dat[obs_rows] # WM: because of data.table, no need for ","
+military_provider_firm <- dat[obs_rows] # because of data.table, no need for ","
 
 ## double check that I don't have duplicate contract events
 length(unique(military_provider_firm$unique_transaction_id)) ==
