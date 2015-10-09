@@ -47,40 +47,34 @@ grep_for_x_in_y <- function(x, y)
         sort(unique(position_vector))
 }
 
-## create a vector of searchable terms across covariates
-## let's search for V-22 Osprey contracts as a probe
+##----------------------------------------------------- 
+# create a vector of searchable terms across covariates
+x1 <- c("212", "AVQ")
+x2 <- c("V-22", "Osprey", "V22", "V22 VERTICAL LIFT AIRCRAFT")
 
-x <- c("V-22", "V22", "Osprey")
+##-----------------------------------------
+# identify relevant columns to grep through
+y1 <- dat$sec
+y2 <- dat$descriptionofcontractrequirement
 
-##----------------
-# parentdunsnumber
-mdap_duns <- subset(dat, parentdunsnumber == "106632750" |
-                         parentdunsnumber == "149751646")
-
-mdap_duns <- subset(mdap_duns, select = "rownumber")
-
-## -------------------------------
-# descriptionofcontractrequirement
-y <- dat$descriptionofcontractrequirement
-mdap_descrip <- as.data.frame(grep_for_x_in_y(x, y)) 
-colnames(mdap_descrip)[1] <- "rownumber" # rename for ease of reference
-
-## -------------------------------
-# sec_descrip
-y <- dat$sec_descrip
-mdap_sec <- as.data.frame(grep_for_x_in_y(x, y)) 
+## ---------------
+# grep through SEC
+mdap_sec <- as.data.table(grep_for_x_in_y(x1, y1)) 
 colnames(mdap_sec)[1] <- "rownumber" # rename for ease of reference
 
-##-------------------------------------------------------------
-# combine MDAP datasets into single data frame to merge with dat
-mdap_obs_rows <- unique(rbindlist(list(mdap_descrip, mdap_duns, mdap_sec)))
+## --------------------------------
+# grep through contract description
+mdap_descrip <- as.data.table(grep_for_x_in_y(x2, y2)) 
+colnames(mdap_descrip)[1] <- "rownumber" # rename for ease of reference
 
-rm(list = c("mdap_descrip", "mdap_duns", "mdap_sec", "y"))
+##--------------------------------------------
+# combine MDAP datasets into single data table 
+mdap_obs_rows <- unique(rbindlist(list(mdap_sec, mdap_descrip)))
+rm(list = c("mdap_descrip", "mdap_sec", "x1", "x2", "y1", "y2"))
 
 ##------------------------------------------
 # build a timeslice with only unique JSF obs 
 mdap_obs <- merge(mdap_obs_rows, dat, by = "rownumber", all.x = TRUE)
-
 rm(list = c("mdap_obs_rows", "dat"))
 
 ##------------------------
