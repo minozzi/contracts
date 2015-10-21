@@ -64,6 +64,11 @@ rm(dat2)
 
 ## Looks like we're left with 36,281,606 left to grep through
 
+##---------------------------
+# add rownumber column to dat
+dat$rownumber <- row.names(dat)
+View(dat)
+
 ##---------
 # save data
 save(dat, file = "~/Data/MDAP/r-data/clean-cols-to-grep.RData")
