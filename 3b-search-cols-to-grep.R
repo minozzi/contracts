@@ -6,12 +6,9 @@
 ## Specs: Mac OS 10.11, RStudio v. 0.99.486
 ## =============================================================================
 
-## Script Purpose: Grep through data table to find MDAP  
+## Script Purpose: Grep through data table to find contract events related to
+## a specific MDAP
 ## Packages Required: data.table
-
-##------
-# set wd
-#setwd("~/Data/contracts")
 
 ##--------------
 # load libraries
@@ -24,6 +21,8 @@ options(stringsAsFactors = FALSE)
 ##-------------------------------------------------
 # load a single time slice of the contracts dataset 
 load("~/Data/MDAP/r-data/clean-cols-to-grep.RData") 
+load("~/Data/MDAP/r-data/mdap-list.RData") 
+
 setkey(dat)
 
 ##-------------------------------------------------------------------
@@ -42,12 +41,6 @@ grep_for_x_in_y <- function(x, y)
         sort(unique(position_vector))
 }
 
-##----------------------------------------------------- 
-# create a vector of searchable terms across covariates
-# NB - these will change depending on the MDAP
-x1 <- c("212", "AVQ") # system or equipment code
-x2 <- c("V-22", "Osprey", "V22") # SEC description or contract description
-
 ##-----------------------------------------
 # identify relevant columns to grep through
 # NB - these remain the same for each MDAP search
@@ -55,6 +48,12 @@ y1 <- dat$sec # system or equipment code
 y2 <- dat$sec_descrip # SEC description
 y3 <- dat$contract_descrip # contract description
 y4 <- dat$major_program # major program code
+
+##----------------------------------------------------- 
+# create a vector of searchable terms across covariates
+# THIS SHOULD BE A FUNCTION "set_terms"
+x1 <- c("220", "ACD") # mdap[[i], sec]
+x2 <- c("C-130", "Hercules") # mdap[[i], grep_terms]
 
 ## ------------------------------------
 # grep through system or equipment code
@@ -96,7 +95,7 @@ rm(obs_rows)
 
 ##------------------- 
 # save new data table
-save(mdap_obs, file = "~/Data/MDAP/r-data/mdap-v22.RData")
+save(mdap_obs, file = "~/Data/MDAP/r-data/mdap-c130.RData")
 
 #---------------------------------------
 # erase previous objects in system memory
