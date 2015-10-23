@@ -86,7 +86,7 @@ setnames(dat, "descriptionofcontractrequirement", "contract_descrip")
 ##--------------------------------------------
 # Save new data table
 save(list = "dat", 
-     file = "~/Desktop/cols_to_grep.RData") 
+     file = "~/Data/MDAP/r-data/cols_to_grep.RData") 
 
 ##----------------------------------------
 # erase previous objects in system memory
@@ -94,7 +94,7 @@ rm(list=ls())
 
 ##-------------------------------
 # Commands to execute in Terminal
-# cd ~/Data/contracts/r-scripts
+# cd ~/Data/MDAP/r-scripts
 # Rscript 1-build-cols-to-grep.R
         
 ## =============================================================================        
