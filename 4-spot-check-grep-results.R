@@ -27,6 +27,12 @@ setkey(dat)
 # let's look at SECs
 table(mdap_obs$sec)
 
+##-------------------------------------------------
+# remove contract events with SECs from other MDAPs
+true_obs <- mdap_obs[sec %in% c("123", "000", "NA")]
+
+
+
 ##-------------------------------------------------- 
 # Subset out the obs which do not have a precise SEC
 false_obs <- mdap_obs[sec != "555"]
