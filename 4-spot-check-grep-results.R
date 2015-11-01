@@ -19,42 +19,37 @@ options(stringsAsFactors = FALSE)
 
 ##-------------------------------------------------
 # load a single time slice of the contracts dataset 
-load("~/Data/MDAP/r-data/mdap-jassm.RData")
-
-setkey(dat)
+# Let's use the F-15 MDAP as an example
+load("~/Desktop/r-data/mdap/Austin-MDAP/mdap-f15.RData")
+setkey(mdap_obs)
 
 ##------------------
 # let's look at SECs
 table(mdap_obs$sec)
+## 124 and AFF are correct, 2AFF and 3AFF aren't right!
 
 ##-------------------------------------------------
 # remove contract events with SECs from other MDAPs
-true_obs <- mdap_obs[sec %in% c("123", "000", "NA")]
-
-
+mdap_obs <- mdap_obs[sec %in% c("124", "AFF", "000")]
 
 ##-------------------------------------------------- 
 # Subset out the obs which do not have a precise SEC
-false_obs <- mdap_obs[sec != "555"]
+false_obs <- mdap_obs[sec == "000", .(rownumber, contract_descrip)]
 
-false_obs <- false_obs[ order(-rank(sec))]
+table(false_obs$contract_descrip)
 
-View(false_obs)
+false_obs[1:10, contract_descrip] ## all these look correct
 
-## remove true positives so that only the false contracts are left in d.t.
-## spot check to ID false contracts for this MDAP
+rm(false_obs)
 
-false_obs[24, contract_descrip] # looks okay
-
-false_obs <- false_obs[4:6] ## let's remove these ones from mdap_obs
-
-setkey(mdap_obs, unique_transaction_id)
-
-mdap_obs <- mdap_obs[!false_obs] 
+#false_obs[1, contract_descrip] # correct contract event
+#false_obs <- false_obs[-1]
+#setkey(mdap_obs, rownumber)
+#mdap_obs <- mdap_obs[!false_obs] 
 
 ##---------
 # save data
-save(mdap_obs, file = "~/Data/MDAP/r-data/mdap-jassm.RData")
+save(mdap_obs, file = "~/Desktop/r-data/mdap/Austin-MDAP/mdap-f15-clean.RData")
 
 #---------------------------------------
 # erase previous objects in system memory
