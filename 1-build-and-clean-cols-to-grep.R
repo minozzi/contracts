@@ -9,7 +9,7 @@
 
 ## Input: 180 monthly time slices from the contracts data on USASpending.gov
 
-## Output: a 36 million x 5 data table of contract events to search through (approx 1.3 gb)
+## Output: a 36 million x 5 data table of contract events to search through (approx 1.8 gb)
 
 ## Packages Required: data.table, parallel, tidyr
 
