@@ -6,12 +6,9 @@
 ## Specs: Mac OS 10.11, RStudio v. 0.99.486
 ## =============================================================================
 
-## Script Purpose: Create a list of unique MDAPs to identify
-## Packages Required: data.table, xlsx
+## Script Purpose: Create a list to identify the 166 unique MDAPs between FY 1999 -- FY 2016
 
-##------
-# set wd
-#setwd("~/Data/contracts")
+## Packages Required: data.table, xlsx
 
 ##--------------
 # load libraries
