@@ -1,12 +1,16 @@
-## =============================================================================
+## ==========================================================================================
 ## Title:  Build data table of columns to grep
 ## Author: Austin Knuppe (knuppe.2@osu.edu)
 ## Project: Contracts Data
 ## Last Updated: 21 October 2015
-## System Requirements: Mac OS 10.11 (El Capitan); RStudio Desktop 0.99.486
-## =============================================================================
+## System Requirements: Mac OS 10.11 (El Capitan); R version 3.2.2, RStudio Desktop 0.99.486
+## Time to run: approx. 5 hrs
+## =========================================================================================
 
-## Script Purpose: build an 38 million x 4 data table of columns to grep through
+## Input: 180 monthly time slices from the contracts data on USASpending.gov
+
+## Output: a 36 million x 5 data table of contract events to search through (approx 1.3 gb)
+
 ## Packages Required: data.table, parallel, tidyr
 
 ##--------------
@@ -97,6 +101,7 @@ rm(list=ls())
 # cd ~/Data/MDAP/r-scripts
 # Rscript 1-build-cols-to-grep.R
 
+#============================================
 load("~/Data/MDAP/r-data/cols_to_grep.RData")
 
 ##------------------------------------
