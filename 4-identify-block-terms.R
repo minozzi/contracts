@@ -17,39 +17,31 @@ library(data.table)
 # set options
 options(stringsAsFactors = FALSE)
 
-##-------------------------------------------------
-# load a single time slice of the contracts dataset 
-# Let's use the F-15 MDAP as an example
-load("~/Desktop/r-data/mdap/Austin-MDAP/mdap-f15.RData")
-setkey(mdap_obs)
+load("~/Data/MDAP/r-data/mdap_list.RData")
+View(mdap_list)
 
-##------------------
-# let's look at SECs
-table(mdap_obs$sec)
-## 124 and AFF are correct, 2AFF and 3AFF aren't right!
+load("")
 
-##-------------------------------------------------
-# remove contract events with SECs from other MDAPs
-mdap_obs <- mdap_obs[sec %in% c("124", "AFF", "000")]
+setkey(mdap)
+table(mdap$sec)
+mdap <- mdap[order(-rank(sec))]
+View(mdap)
 
-##-------------------------------------------------- 
-# Subset out the obs which do not have a precise SEC
-false_obs <- mdap_obs[sec == "000", .(rownumber, contract_descrip)]
+block <- data.table(mdap[sec == "000" | is.na(sec), contract_descrip])
+View(block)
+test <- data.table(grep('(^|\\s)($|\\s)', block$V1))
 
-table(false_obs$contract_descrip)
+#(^|\\s)Austin Knuppe($|\\s)
 
-false_obs[1:10, contract_descrip] ## all these look correct
+mdap_list[] <- NA
 
-rm(false_obs)
+rm(mdap, block)
 
-#false_obs[1, contract_descrip] # correct contract event
-#false_obs <- false_obs[-1]
-#setkey(mdap_obs, rownumber)
-#mdap_obs <- mdap_obs[!false_obs] 
+## to fix row names when removing duplicate MDAPs
+row.names(mdap_list) <- 1:nrow(mdap_list)
+mdap_list$rownumber <- row.names(mdap_list)
 
-##---------
-# save data
-save(mdap_obs, file = "~/Desktop/r-data/mdap/Austin-MDAP/mdap-f15-clean.RData")
+save(mdap_list, file = "~/Dropbox/Data/MDAP/r-data/mdap_list.RData")
 
 #---------------------------------------
 # erase previous objects in system memory
