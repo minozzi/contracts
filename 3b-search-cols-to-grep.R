@@ -51,8 +51,8 @@ y4 <- dat$major_program # major program code
 
 rm(dat)
 
-x1 <- c("162", "GAJ")
-x2 <- c("NAVSTAR Global Positioning System", "NAVSTAR")
+x1 <- mdap_list(1, sec)
+x2 <- mdap_list(1, grep_terms)
 
 ##----------------------------------------------------- 
 # create a vector of searchable terms across covariates
