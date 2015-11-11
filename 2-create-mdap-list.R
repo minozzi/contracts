@@ -96,7 +96,6 @@ mdap_grep$MDAP_name<-gsub(" ", "_", mdap_grep$MDAP_name)
 mdap_grep$MDAP_name<-gsub("/", "_", mdap_grep$MDAP_name)
 remove(S1, S2, S3, d, d2, d3, mdapdat2)
 
-
 ##----------------------------------------------------------
 # save new mdap list
 save(mdap_grep, file = "~/Data/MDAP/r-data/mdap-grep.RData")
