@@ -5,7 +5,9 @@ output: html_document
 
 # 0-decompress-contracts-data.R
 
-What it does:
+Input:
+
+What the script does:
 - unzips each of the 180 yearmo raw contracts files
 
 Output:
@@ -22,5 +24,34 @@ What it does:
  
 Output:
 - a 38 million x 5 data table
- 
+
+# 1-build-cols-to-grep
+
+Input:
+What the script does:
+Output:
+
+# 2-build-mdap-list
+
+Input:
+What the script does:
+Output:
+
+# 3-search-cols-to-grep
+
+Input:
+What the script does:
+Output:
+
+# 4-create-mdap-cols
+
+Input:
+What the script does:
+Output:
+
+# 5-descriptive-analysis-of-mdap-cols
+
+Input:
+What the script does:
+Output:
 
