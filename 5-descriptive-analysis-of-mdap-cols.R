@@ -10,92 +10,84 @@
 
 library(data.table)
 library(ggplot2)
-library(reshape2)
 
 ## load data
-load("~/Data/JSF/data/JSF.RData")
+load("~/Data/MDAP/r-data/mdap-cols.RData")
 
-setDT(JSF)
+setDT(mdap)
 
-## Total Dollars Spent on F-35
-JSF$dollarsobligated[is.na(JSF$dollarsobligated)] <- 0
+View(mdap)
 
-sum(JSF$dollarsobligated) # $ 23,822,644,394
+table(is.na(mdap$unique_transaction_id))
+mdap_no_obs <- mdap[is.na(unique_transaction_id), ]
 
-## Spending over time
-fy_spending <- JSF[ , .(dollarsobligated = sum(dollarsobligated)), 
-                    by = fiscal_year]
+## Four MDAPS have 0 obs in our dataset
+# Amphibious Combat Vehicle (ACV)
+# Mobile Landing Platform (MLP)
+# VH-92A Presidential Helicopter
+# Tactical Networking Radio Systems (TNRS) 
 
-fy_spending <- fy_spending[ order(rank(dollarsobligated))]
+# Let's remove the empty MDAPs 
+setkey(mdap, mdap)
+mdap <- mdap[!"Amphibious Combat Vehicle (ACV)"]
+mdap <- mdap[!"Mobile Landing Platform (MLP)"]
+mdap <- mdap[!"VH-92A Presidential Helicopter"]
+mdap <- mdap[!"Tactical Networking Radio Systems (TNRS)"]
 
-fy_spending$lndollarsobligated <- log(fy_spending$dollarsobligated)
+mdap_freq <- mdap[, .N, by = mdap]
+mdap_freq <- mdap_freq[ order(-rank(N))]
+View(mdap_freq)
 
-ggplot(data = fy_spending, 
-       aes(x = fiscal_year, y = dollarsobligated)) + 
-        scale_x_continuous(breaks = c(2003, 2004, 2005, 2006, 2007, 2008, 
-                                      2009, 2010, 2011, 2012, 2013, 2014)) + 
-        scale_y_continuous(limits=c(0, 4000000000)) +
-        labs(title = "Spending on the F-35 Program by Fiscal Year") + 
-        labs(x = "Fiscal Year") +
-        labs(y = "Contract Value (USD)") +
-        geom_line() +
-        theme_bw()
+mean(mdap_freq$N) # 2520 obs
+median(mdap_freq$N) # 856 obs
 
-pdf("~/Data/JSF/viz/fy_spending.pdf")
-ggplot(data = fy_spending, 
-       aes(x = fiscal_year, y = lndollarsobligated)) + 
-        scale_x_continuous(breaks = c(2003, 2004, 2005, 2006, 2007, 2008, 
-                                      2009, 2010, 2011, 2012, 2013, 2014)) + 
-        scale_y_continuous(limits=c(0, 23)) +
-        labs(title = "Spending on the F-35 Program by Fiscal Year") + 
-        labs(x = "Fiscal Year") +
-        labs(y = "Ln Contract Value (USD)") +
-        geom_line() +
-        theme_bw()
-dev.off()
+mode <- function(x) {
+        ux <- unique(x)
+        ux[which.max(tabulate(match(x, ux)))]
+}
+
+mode(mdap_freq$N) # 2 contract events (not the most informative, I suppose)
+# maybe a modal range is more appropriate?
+
+## Four MDAPS have 0 obs in our dataset
+# Amphibious Combat Vehicle (ACV)
+# Mobile Landing Platform (MLP)
+# VH-92A Presidential Helicopter
+# Tactical Networking Radio Systems (TNRS) 
 
 
+## Distribution of MDAP counts
+qplot(mdap_freq$N,
+      geom = "histogram",
+      binwidth = 1000,  
+      main = "Histogram of MDAPs by number of contract events", 
+      xlab = "MDAP contract events",  
+      fill = I("blue"), 
+      col = I("red"), 
+      alpha = I(.2),
+      ylim = c(0,100),
+      xlim = c(0, 60000))
 
-## Contract dollars by firm
-firm_dollars <- JSF[ , .(dollarsobligated.Sum = sum(dollarsobligated)), 
-                     by = mod_parent]
 
-firm_dollars <- firm_dollars[ order(-rank(dollarsobligated.Sum))]
+mdap <- mdap[order(mdap)]
+qplot(mdap$mdap,
+      geom = "histogram",
+      binwidth = "1",
+      main = "Histogram of MDAPs by number of contract events", 
+      xlab = "MDAP",
+      ylab = "Count of Contract Events")
+      xlim = c(0,161),
+      ylim = c(0, 60000))
 
-firm_dollars <- firm_dollars[1:25, ]
+      
+setkey(mdap, unique_transaction_id)
+mdap_unique <- mdap[unique(unique_transaction_id), ]
 
-## Contract dollars by DOD agency
-agency_dollars <- JSF[ , .(dollarsobligated.Sum = sum(dollarsobligated)), 
-                       by = mod_agency]
+mdap_overlap <- mdap[duplicated(unique_transaction_id), ] # 14,588 contract events have duplicate SECs (3%)
 
-agency_dollars <- agency_dollars[ order(-rank(dollarsobligated.Sum))]
-
-## Why does the Army distribute more JSF contract $$ than the Air Force?
-
-## Contract dollars by DOD office
-office_dollars <- JSF[ , .(dollarsobligated.Sum = sum(dollarsobligated)), 
-                       by = contracting_office]
-
-office_dollars <- office_dollars[ order(-rank(dollarsobligated.Sum))]
-
-office_dollars <- office_dollars[1:50, ]
-
-## Contract dollars by PSC code
-psc_dollars <- JSF[ , .(dollarsobligated.Sum = sum(dollarsobligated)), 
-                    by = psc_descrip]
-
-psc_dollars <- psc_dollars[ order(-rank(dollarsobligated.Sum))]
-
-psc_dollars <- psc_dollars[1:50, ]
-
-## Contract dollars by CD
-state_dollars <- JSF[ , .(dollarsobligated.Sum = sum(dollarsobligated)), 
-                      by = state]
-
-state_dollars <- state_dollars[ order(-rank(dollarsobligated.Sum))]
-
-state_dollars <- state_dollars[1:41, ]
-
-###############################################################################
-## EOF
-###############################################################################
+save(list = c(mdap_freq, ) 
+     file = "~/Data/MDAP/r-data/mdap-descriptive.RData")
+     
+##=============================================================================================================================
+## END OF FILE
+##=============================================================================================================================
