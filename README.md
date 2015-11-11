@@ -6,6 +6,14 @@ output: html_document
 # Where's the data?
 file path: "~/Box Sync/contracts-data/MDAP/r-data"
 
+# What's the unit of observation
+
+The unique unit of observation is a Major Defense Acquisition Program (MDAP) in a given time period (e.g. A-10 Thunderbolt, FY 2011). Major Defense Acqusition Programs (MDAPS) are assigned and funded by the U.S. Defense Department's Office of the Under Secretary of Defense for Acquisition, Technology and Logistics (ATL) on an annual basis. We first identified MDAPS through the Pentagon's annual Selected Acquisition Reports (SARs), which track MDAPs by reporting on their schedule, unit counts, total spending, and progress through milestones. Within our data from USASpending.gov, we can identify MDAPs three distinct ways.  First, we can identify the system or equipment code (SEC) of a contract event. SEC's are typically a three digit code (numbers, letters, or a combination), followed by a : and description (e.g. 198: F-35 Joint Strike Fighter). Second, if a contract event has missing values on the SEC column, we can search through the Major Program Code, which is simply the character identifier for the contract (e.g. "F-35 Joint Strike Fighter"). Finally, we can search through the contract description column, which typically contains a large string of characters descibing -- in various levels of detail -- what products, goods, or services were performed. Using a specific suite of search and block terms (outlined below) we can identify MDAPs in the contract description in instances where there is missinging in the SEC and Program Code columns.
+
+Due to the scale of our data (over 38 million unique observations), there is inevitably overlap in contract events related to multiple MDAPs. For example, a contract event in our data may be coded as belonging to both the F-35 Joint Strike Fighter and JDAM munition.  Contract event overlap is thus common for MDAPs for munitions on multiple defense platforms (e.g.missiles, bombs, ammunition). 
+
+We deal with contract overlap in the following fashion...
+
 # 0-decompress-contracts-data.R
 
 Input:
