@@ -28,6 +28,15 @@ mdap_list <- mdap_list[ order(-rank(N))]
 save(mdap_list, 
      file = "~/Box Sync/contracts-data/MDAP/mdap-list.RData")
 
+
+###ADAM's CODE HERE#####
+
+
+
+
+
+
+
 #---------------------------------------
 # erase previous objects in system memory
 rm(list=ls())  
