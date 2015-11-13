@@ -108,3 +108,79 @@ save(list = c(mdap, mdap_freq, mdap_overlap, mdap_overlap_freq)
 ##=============================================================================================================================
 ## END OF FILE
 ##=============================================================================================================================
+
+###############################
+# MDAP Descriptive Stats      #
+# Adam Lauretig               #
+# November 11, 2015           #
+###############################
+rm(list = ls())
+options(stringsAsFactors = FALSE)
+
+library(parallel)
+library(data.table)
+load("~/Dropbox/Data/MDAP/r-data/mdap-cols.RData")
+
+setkey(mdap, unique_transaction_id)
+
+########
+# Looking at those contracts which are listed to multiple MDAPS #
+########
+
+transact_count<-mdap[,.N,by=unique_transaction_id]
+
+transact_count_mult<-transact_count[, subset(transact_count, N>1)]
+
+sum(transact_count_mult$N) #28,813 contract events that overlap
+
+mult<-merge(transact_count_mult, mdap, by= "unique_transaction_id")
+
+mdap_multi<-mult[,.N,by=mdap]
+#Quick notes: Aegis BMD is multi-listed the most, followed by EA-6 Prowler, and 
+#the SBIRS, F-22, and MLV.
+
+
+########
+# Looking at those contracts which are listed to single MDAPS #
+########
+
+transact_count_single<-transact_count[, subset(transact_count, N==1)]
+
+sing<-merge(transact_count_single, mdap, by = "unique_transaction_id")
+
+mdap_single<-sing[,.N,by=mdap]
+
+
+########
+# Comparing single and multiple contracts recipients #
+########
+
+compare<-merge(mdap_single, mdap_multi, by = "mdap")
+setnames(compare, c("mdap", "single_contracts", "multiple_contracts"))
+
+hist(compare$single_contracts)
+hist(compare$multiple_contracts)
+
+hist(log1p(compare$single_contracts))
+hist(log1p(compare$multiple_contracts))
+
+plot(compare$single_contracts, compare$multiple_contracts, pch=20)
+plot(log1p(compare$single_contracts), log1p(compare$multiple_contracts), pch=20)
+
+
+########
+# standardizing and plotting to see what the trends look like #
+########
+plot(compare$single_contracts, compare$multiple_contracts, pch=20)
+
+plot(log1p(compare$single_contracts), log1p(compare$multiple_contracts), pch=20)
+##looks like a fairly linear relationship between the two
+
+single_stan<-(log1p(compare$single_contracts)-mean(log1p(compare$single_contracts))/
+                sd(log1p(compare$single_contracts)))
+
+multi_stan<-(log1p(compare$multiple_contracts)-mean(log1p(compare$multiple_contracts))/
+               sd(log1p(compare$multiple_contracts)))
+
+plot(single_stan, multi_stan, pch=20)
+abline(h=0, v=0)
