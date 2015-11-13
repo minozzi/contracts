@@ -9,9 +9,7 @@
 ## Script Purpose: Basic descriptive analysis of the JSF data
 
 library(data.table)
-library(ggplot2)
 
-## load data
 load("~/Data/MDAP/r-data/mdap-cols.RData")
 
 setDT(mdap)
@@ -21,71 +19,90 @@ View(mdap)
 table(is.na(mdap$unique_transaction_id))
 mdap_no_obs <- mdap[is.na(unique_transaction_id), ]
 
-## Four MDAPS have 0 obs in our dataset
+## Five MDAPS have 0 obs in our dataset
 # Amphibious Combat Vehicle (ACV)
 # Mobile Landing Platform (MLP)
 # VH-92A Presidential Helicopter
 # Tactical Networking Radio Systems (TNRS) 
 
+# FGM-172 Predator Short Range Assault Weapon (SRAW)
+
 # Let's remove the empty MDAPs 
 setkey(mdap, mdap)
 mdap <- mdap[!"Amphibious Combat Vehicle (ACV)"]
+mdap <- mdap[!"FGM-172 Predator Short Range Assault Weapon (SRAW)"]
 mdap <- mdap[!"Mobile Landing Platform (MLP)"]
 mdap <- mdap[!"VH-92A Presidential Helicopter"]
-mdap <- mdap[!"Tactical Networking Radio Systems (TNRS)"]
+mdap <- mdap[!"Tactical Networking Radio Systems (TNRS) (formerly Joint Tactical Radio System (JTRS))"]
 
-mdap_freq <- mdap[, .N, by = mdap]
-mdap_freq <- mdap_freq[ order(-rank(N))]
+## Save the new file
+save(mdap, file = "~/Data/MDAP/r-data/mdap-cols.RData")
+
+rm(list=ls()) 
+
+################################################################################
+################################################################################
+
+library(data.table)
+library(ggplot2)
+
+load("~/Data/MDAP/r-data/mdap-cols.RData")
+
+setDT(mdap)
+
+mdap_freq <- mdap[, .N, by = mdap] # 156 out of 161 MDAPs represented
+
+mdap_freq <- mdap_freq[ order(-rank(N))] # rank by number of contract events
 View(mdap_freq)
 
-mean(mdap_freq$N) # 2520 obs
-median(mdap_freq$N) # 856 obs
+mean(mdap_freq$N) # 2600 contract events per MDAP on average
+sd(mdap_freq$N) # 6,137 standard deviation
+median(mdap_freq$N) # 942 contract events, a strong right skew to the dist.
 
 mode <- function(x) {
         ux <- unique(x)
         ux[which.max(tabulate(match(x, ux)))]
 }
 
-mode(mdap_freq$N) # 2 contract events (not the most informative, I suppose)
+mode(mdap_freq$N) # 5668 contract events (not the most informative, I suppose)
 # maybe a modal range is more appropriate?
 
-## Four MDAPS have 0 obs in our dataset
-# Amphibious Combat Vehicle (ACV)
-# Mobile Landing Platform (MLP)
-# VH-92A Presidential Helicopter
-# Tactical Networking Radio Systems (TNRS) 
-
+## Bar plot of contract events per MDAP
+qplot(factor(mdap), 
+      data = mdap, 
+      geom = "bar",
+      main = "Distribution of MDAPs by contract event count", 
+      xlab = "MDAP",
+      ylab = "Count of Contract Events")
+      xlim = c(0,161),
+      ylim = c(0, 60000))
 
 ## Distribution of MDAP counts
 qplot(mdap_freq$N,
       geom = "histogram",
       binwidth = 1000,  
       main = "Histogram of MDAPs by number of contract events", 
-      xlab = "MDAP contract events",  
-      fill = I("blue"), 
-      col = I("red"), 
-      alpha = I(.2),
+      xlab = "MDAP contract events", 
+      ylab = "MDAP count",
       ylim = c(0,100),
       xlim = c(0, 60000))
 
-
-mdap <- mdap[order(mdap)]
-qplot(mdap$mdap,
-      geom = "histogram",
-      binwidth = "1",
-      main = "Histogram of MDAPs by number of contract events", 
-      xlab = "MDAP",
-      ylab = "Count of Contract Events")
-      xlim = c(0,161),
-      ylim = c(0, 60000))
-
-      
+## Let's look at contract event overlap
 setkey(mdap, unique_transaction_id)
-mdap_unique <- mdap[unique(unique_transaction_id), ]
 
-mdap_overlap <- mdap[duplicated(unique_transaction_id), ] # 14,588 contract events have duplicate SECs (3%)
+mdap_overlap <- mdap[duplicated(unique_transaction_id), ] # 14,581 contract events have duplicate SECs (3%)
 
-save(list = c(mdap_freq, ) 
+mdap_overlap_freq <- mdap_overlap[, .N, by = mdap] # 106 MDAPs have some overlap
+
+mdap_overlap_freq <- mdap_overlap_freq[ order(-rank(N))] # rank by number of contract events
+
+View(mdap_overlap_freq)      
+
+mean(mdap_overlap_freq$N) #  138contract events per MDAP on average
+sd(mdap_overlap_freq$N) # 481 standard deviation
+median(mdap_overlap_freq$N) # 14.5
+
+save(list = c(mdap, mdap_freq, mdap_overlap, mdap_overlap_freq) 
      file = "~/Data/MDAP/r-data/mdap-descriptive.RData")
      
 ##=============================================================================================================================
