@@ -108,7 +108,6 @@ save(list = c(mdap, mdap_freq, mdap_overlap, mdap_overlap_freq)
 ##=============================================================================================================================
 ## END OF FILE
 ##=============================================================================================================================
-
 ###############################
 # MDAP Descriptive Stats      #
 # Adam Lauretig               #
@@ -161,12 +160,16 @@ setnames(compare, c("mdap", "single_contracts", "multiple_contracts"))
 hist(compare$single_contracts)
 hist(compare$multiple_contracts)
 
-hist(log1p(compare$single_contracts))
-hist(log1p(compare$multiple_contracts))
+hist(log1p(compare$single_contracts), main="Histograph of single-contract MDAPS",
+     xlab="ln count of single contracts", ylab="MDAP count")
+
+hist(log1p(compare$multiple_contracts),main="Histograph of MDAPs with Overlaps",
+     xlab="ln count of overlap contracts", ylab="MDAP count")
 
 plot(compare$single_contracts, compare$multiple_contracts, pch=20)
-plot(log1p(compare$single_contracts), log1p(compare$multiple_contracts), pch=20)
-
+plot(log1p(compare$single_contracts), log1p(compare$multiple_contracts), pch=20,
+     main="Plot of Single vs. Overlap Contract MDAPs",
+      xlab="ln of single contracts", ylab="ln of overlap contracts")
 
 ########
 # standardizing and plotting to see what the trends look like #
