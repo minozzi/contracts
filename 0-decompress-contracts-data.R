@@ -17,7 +17,7 @@ files <- list.files()
 
 for(fn in files){
         load(fn)
-        save(List = "dat",  file = fn)
+        save(List = "dat",  file = fn)}
 
 ## =============================================================================        
 ## END OF FILE
